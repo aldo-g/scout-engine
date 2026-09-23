@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scout Engine</title>
+<meta name="description" content="Startup scouting, dealflow management, and jury support for accelerators, incubators, VCs, angel networks, and corporate innovation teams.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f3f2f2'/%3E%3Ctext x='50' y='64' text-anchor='middle' font-family='Georgia,serif' font-size='40' fill='%23201e1d'%3ESE%3C/text%3E%3Crect x='30' y='72' width='40' height='3' fill='%230088b0'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-bg: #f3f2f2;
+    --color-text: #201e1d;
+    --color-accent-700: #0088b0;
+    --color-accent-900: #005a75;
+    --font-heading: "Newsreader", Georgia, "Times New Roman", serif;
+    --font-heading-weight: 500;
+    --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    --space-3: 12px;
+    --text-70: color-mix(in srgb, var(--color-text) 70%, transparent);
+    --text-75: color-mix(in srgb, var(--color-text) 75%, transparent);
+    --text-80: color-mix(in srgb, var(--color-text) 80%, transparent);
+    --text-45: color-mix(in srgb, var(--color-text) 45%, transparent);
+    --gutter: clamp(20px, 5vw, 72px);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 28px;
+    text-wrap: pretty;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--color-accent-700); }
+  a:hover { color: var(--color-accent-900); }
+  h1, h2, h3, blockquote, .serif {
+    font-family: var(--font-heading);
+    font-weight: var(--font-heading-weight);
+  }
+  img { max-width: 100%; }
+
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 var(--gutter); }
+  .eyebrow {
+    display: block;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-70);
+  }
+  .muted { color: var(--text-80); }
+  .rule-double {
+    height: 5px;
+    border-top: 2px solid var(--color-text);
+    border-bottom: 1px solid var(--color-text);
+  }
+
+  /* Buttons */
+  .btn {
+    font-family: var(--font-body);
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 18px;
+    font-size: 15px;
+    line-height: 1.2;
+    border: 1.5px solid var(--color-text);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-text);
+    cursor: pointer;
+    transition: background .15s, color .15s;
+    white-space: nowrap;
+  }
+  .btn:hover { background: var(--color-text); color: var(--color-bg); }
+  .btn-lg { padding: 16px 24px; font-size: 18px; gap: 12px; }
+  .btn-ghost {
+    text-decoration: underline;
+    text-underline-offset: 6px;
+    text-decoration-thickness: 1px;
+    display: inline-flex;
+    align-items: center;
+    padding: 16px 8px;
+    font-size: 18px;
+    color: var(--color-text);
+    font-weight: 500;
+  }
+  .btn-ghost:hover { color: var(--color-accent-700); }
+
+  /* Nav */
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: clamp(16px, 3vw, 32px);
+    padding: 20px var(--gutter);
+    padding-inline: max(var(--gutter), calc((100% - 1200px) / 2 + var(--gutter)));
+    font-size: 15px;
+    border-bottom: 1px solid var(--text-45);
+    position: sticky;
+    top: 0;
+    background: color-mix(in srgb, var(--color-bg) 92%, transparent);
+    backdrop-filter: blur(8px);
+    z-index: 10;
+  }
+  .nav-brand {
+    font-family: var(--font-heading);
+    font-weight: var(--font-heading-weight);
+    font-size: 22px;
+    letter-spacing: -0.01em;
+    margin-right: auto;
+    white-space: nowrap;
+  }
+  @media (max-width: 480px) {
+    .nav { padding-top: 14px; padding-bottom: 14px; }
+    .nav .btn { padding: 8px 14px; font-size: 14px; }
+  }
+  .nav a { color: var(--color-text); text-decoration: none; }
+  .nav a:not(.btn):hover { text-decoration: underline; text-underline-offset: 5px; }
+  .nav .nav-link { display: none; }
+  @media (min-width: 720px) { .nav .nav-link { display: inline; } }
+
+  /* Hero */
+  .hero { padding: 96px 0 0; }
+  .hero-top {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 48px clamp(28px, 5vw, 96px);
+    align-items: flex-end;
+  }
+  .hero-head { flex: 2 1 420px; min-width: 0; }
+  .hero h1 {
+    font-size: clamp(42px, 6vw, 80px);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    margin: 0 0 0 -0.035em;
+    max-width: 14ch;
+  }
+  .hero h1 span { display: block; }
+  .hero-photo {
+    display: block;
+    flex: 1 1 220px;
+    max-width: 340px;
+    text-decoration: none;
+    color: var(--color-text);
+  }
+  .hero-photo figure { margin: 0; }
+  .hero-photo .print { aspect-ratio: 4 / 5; position: relative; width: 100%; overflow: hidden; }
+  .hero-photo img {
+    display: block; width: 100%; height: 100%;
+    object-fit: cover; object-position: 50% 30%;
+  }
+  .hero-photo p { margin: 14px 0 0; font-size: 15px; line-height: 22px; }
+  .hero-photo strong { font-weight: 600; }
+  .hero-photo em { color: var(--text-75); }
+  .hero-bottom {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+    gap: 28px clamp(28px, 5vw, 96px);
+    margin-top: 48px;
+    align-items: start;
+  }
+  .hero-lede { font-size: 19px; line-height: 30px; max-width: 52ch; margin: 0; }
+  .hero-pull {
+    font-family: var(--font-heading);
+    font-size: clamp(22px, 2.2vw, 28px);
+    line-height: 1.35;
+    font-style: italic;
+    max-width: 30ch;
+    margin: 0;
+  }
+  .hero-ctas { display: flex; gap: var(--space-3); flex-wrap: wrap; margin-top: 28px; }
+
+  /* Logo strip */
+  .experience { padding: 40px 0 0; }
+  .logo-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px clamp(32px, 5vw, 64px);
+    padding: 32px 0;
+  }
+  .logo-row .eyebrow { max-width: 16ch; line-height: 20px; }
+  .logo {
+    width: auto;
+    display: block;
+    filter: grayscale(1) contrast(1.1);
+    mix-blend-mode: multiply;
+    opacity: 0.85;
+    transition: filter .2s, opacity .2s;
+  }
+  .logo-row .logo:hover { filter: none; opacity: 1; }
+  .rule-single { border-top: 1px solid var(--color-text); }
+
+  /* Who it's for */
+  .who { padding: 112px 0 0; }
+  .who figure { margin: 0; }
+  .who .eyebrow { margin-bottom: 24px; }
+  .who blockquote {
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(26px, 3vw, 40px);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    max-width: 34ch;
+    margin: 0;
+  }
+
+  /* What you receive */
+  .receive { padding: 112px 0 0; }
+  .receive .eyebrow { margin-bottom: 20px; }
+  .section-title {
+    font-size: clamp(32px, 4vw, 48px);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0 0 56px;
+    max-width: 22ch;
+  }
+  .receive-list { display: grid; gap: 56px; }
+  .receive-item {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: 12px clamp(28px, 4vw, 64px);
+    align-items: baseline;
+    scroll-margin-top: 96px;
+  }
+  .receive-item .head { display: flex; align-items: baseline; gap: 20px; }
+  .receive-item .num {
+    font-family: var(--font-heading);
+    font-size: clamp(56px, 6vw, 84px);
+    line-height: 1;
+    font-weight: var(--font-heading-weight);
+    letter-spacing: -0.02em;
+    color: var(--color-accent-700);
+  }
+  .receive-item h2 {
+    font-size: 26px; line-height: 32px; letter-spacing: -0.01em;
+    margin: 0; max-width: 16ch;
+  }
+  .receive-item p {
+    margin: 0; max-width: 56ch; color: var(--text-80);
+    hyphens: auto; grid-column: span 2;
+  }
+  @media (max-width: 600px) { .receive-item p { grid-column: auto; } }
+
+  /* What changes */
+  .changes { padding: 112px 0 0; }
+  .changes .eyebrow { margin-bottom: 36px; }
+  .changes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+    gap: 48px clamp(28px, 5vw, 96px);
+  }
+  .changes h3 {
+    font-size: clamp(28px, 3vw, 38px);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    margin: 0;
+  }
+  .changes p { margin: 12px 0 0; max-width: 42ch; color: var(--text-80); }
+  .changes .link-arrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    margin-top: 56px; font-size: 18px; text-underline-offset: 6px;
+  }
+
+  /* Founder */
+  .founder {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+    gap: 48px clamp(24px, 5vw, 96px);
+    align-items: start;
+    padding: 112px 0 0;
+  }
+  .founder .eyebrow { margin-bottom: 20px; }
+  .founder h2 { font-size: 40px; line-height: 46px; letter-spacing: -0.015em; margin: 0; }
+  .founder p.bio { margin: 18px 0 0; max-width: 50ch; color: var(--text-80); }
+  .founder p.bio + p.bio { margin-top: 14px; }
+  .founder-side { padding-top: 34px; }
+  .edu-logos { display: flex; flex-wrap: wrap; align-items: center; gap: 28px; }
+  .edu-logos .logo { height: 64px; }
+  .career { margin-top: 32px; max-width: 560px; }
+  .career p {
+    display: flex; align-items: baseline; gap: 8px;
+    margin: 0; font-size: 15.5px; line-height: 30px;
+  }
+  .career .leader {
+    flex: 1; min-width: 20px; align-self: flex-end; margin-bottom: 0.4em;
+    border-bottom: 1px dotted var(--text-45);
+  }
+  .career .years { font-variant-numeric: tabular-nums; color: var(--text-70); }
+
+  /* Sample form */
+  .sample { padding: 112px 0 56px; }
+  .sample .rule-double { margin-bottom: 56px; }
+  .sample h3 {
+    font-size: clamp(32px, 4vw, 48px);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0;
+    max-width: 20ch;
+  }
+  .sample p.lead { margin: 16px 0 0; max-width: 58ch; color: var(--text-80); }
+  .sample form {
+    display: flex; flex-wrap: wrap; gap: var(--space-3);
+    align-items: stretch; max-width: 680px; margin-top: 28px;
+  }
+  .input {
+    font: inherit;
+    font-size: 16px;
+    min-height: 52px;
+    padding: 0 16px;
+    border: 1.5px solid var(--text-45);
+    border-radius: 6px;
+    background: #fff;
+    color: var(--color-text);
+  }
+  .input:focus { outline: 2px solid var(--color-accent-700); outline-offset: 1px; border-color: transparent; }
+  .input.email { flex: 1 1 200px; }
+  .input.sector { flex: 1 1 180px; }
+  .sample .btn-lg { min-height: 52px; padding: 0 24px; }
+  .thanks {
+    font-size: 19px; line-height: 28px; margin: 28px 0 0;
+    font-style: italic; color: var(--color-accent-700);
+    font-family: var(--font-heading);
+    font-size: 22px;
+  }
+  [hidden] { display: none !important; }
+
+  footer {
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px;
+    padding: 56px 0; font-size: 13px; line-height: 28px; color: var(--text-70);
+  }
+
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="arrow" viewBox="0 0 256 256">
+    <polygon points="216 128 144 200 144 56 216 128" opacity="0.3"></polygon>
+    <path d="M221.66,122.34l-72-72A8,8,0,0,0,136,56v64H40a8,8,0,0,0,0,16h96v64a8,8,0,0,0,13.66,5.66l72-72A8,8,0,0,0,221.66,122.34ZM152,180.69V75.31L204.69,128Z"></path>
+  </symbol>
+</svg>
+
+<nav class="nav">
+  <span class="nav-brand">Scout Engine</span>
+  <a class="nav-link" href="#receive">What you receive</a>
+  <a class="nav-link" href="#founder">Who runs it</a>
+  <a class="nav-link" href="#sample">Contact</a>
+  <a href="#sample" class="btn">Request a sample list<svg width="16" height="16" fill="currentColor" aria-hidden="true"><use href="#arrow"/></svg></a>
+</nav>
+
+<div class="wrap">
+
+  <section class="hero">
+    <div class="hero-top">
+      <div class="hero-head">
+        <h1>
+          <span>Get the right startups in front of your jury,</span>
+          <span>without the legwork.</span>
+        </h1>
+      </div>
+      <a href="#founder" class="hero-photo">
+        <figure>
+          <div class="print">
+            <img src="assets/founder.jpeg" alt="Navojit Dastidar, founder of Scout Engine">
+          </div>
+        </figure>
+        <p><strong>Navojit Dastidar</strong>, founder. <em>Runs startup scouting and jury selection for Amsterdam Circular.</em></p>
+      </a>
+    </div>
+    <div class="hero-bottom">
+      <p class="hero-lede">Running a program means finding strong startups, talking to them, tracking every lead, and preparing a decision, all while most search results turn out to be consultancies, foundations, and established companies. Existing scouting platforms cover only part of that and come with premium price tags.</p>
+      <div>
+        <p class="hero-pull">With Scout Engine, you receive the whole process, from first search to final selection, at a fraction of the cost.</p>
+        <div class="hero-ctas">
+          <a href="#sample" class="btn btn-lg">Request a free sample list<svg width="20" height="20" fill="currentColor" aria-hidden="true"><use href="#arrow"/></svg></a>
+          <a href="#receive" class="btn-ghost">See what you receive</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="experience" aria-label="Experience">
+    <div class="rule-double"></div>
+    <div class="logo-row">
+      <span class="eyebrow">Scouting and investment experience from</span>
+      <img class="logo" src="assets/logos/ams.png" alt="AMS Institute" title="AMS Institute" style="height:44px">
+      <img class="logo" src="assets/logos/rockstart.png" alt="Rockstart" title="Rockstart" style="height:52px">
+      <img class="logo" src="assets/logos/bangladesh-angels.png" alt="Bangladesh Angels" title="Bangladesh Angels" style="height:72px">
+      <img class="logo" src="assets/logos/plug-and-play.png" alt="Plug and Play" title="Plug and Play" style="height:40px">
+      <img class="logo" src="assets/logos/metabolic.png" alt="Metabolic" title="Metabolic" style="height:56px">
+    </div>
+    <div class="rule-single"></div>
+  </section>
+
+  <section class="who">
+    <figure>
+      <span class="eyebrow">Who it's for</span>
+      <blockquote>Accelerators, incubators, VCs, angel networks, and corporate innovation teams that want a steady flow of relevant startups and a professional selection process without building a large in-house team.</blockquote>
+    </figure>
+  </section>
+
+  <section id="receive" class="receive">
+    <span class="eyebrow">What you receive</span>
+    <h2 class="section-title">From first search to final selection.</h2>
+    <div class="receive-list">
+      <div id="r01" class="receive-item">
+        <div class="head">
+          <span class="num">01</span>
+          <h2>A verified list of startups</h2>
+        </div>
+        <p>Tell us the sectors you care about, such as circular economy, climate tech, or health tech. You receive a list of companies that are genuinely early-stage tech startups, with consultancies, nonprofits, and legacy firms already filtered out.</p>
+      </div>
+      <div id="r02" class="receive-item">
+        <div class="head">
+          <span class="num">02</span>
+          <h2>Startup conversations, already done</h2>
+        </div>
+        <p>You get startups that have been spoken to directly, with fit, stage, and interest in your program confirmed before they reach you.</p>
+      </div>
+      <div id="r03" class="receive-item">
+        <div class="head">
+          <span class="num">03</span>
+          <h2>A managed dealflow pipeline</h2>
+        </div>
+        <p>You always see where each startup stands, from first contact to final decision, in a web application or spreadsheet. Optional CRM integration keeps everything in the system you already use.</p>
+      </div>
+      <div id="r04" class="receive-item">
+        <div class="head">
+          <span class="num">04</span>
+          <h2>A ranked shortlist</h2>
+        </div>
+        <p>You receive the top startups for your program, evaluated against your criteria, so you start from the strongest candidates.</p>
+      </div>
+      <div id="r05" class="receive-item">
+        <div class="head">
+          <span class="num">05</span>
+          <h2>Support for your jury or investment committee</h2>
+        </div>
+        <p>You receive the materials and insights your decision-makers need, plus support throughout the selection process.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="changes">
+    <span class="eyebrow">What changes for you</span>
+    <div class="changes-grid">
+      <div>
+        <h3>You save time.</h3>
+        <p>Your team focuses on decisions and relationships, not research and admin.</p>
+      </div>
+      <div>
+        <h3>You save money.</h3>
+        <p>You get a full scouting and dealflow service without the enterprise-level price tag.</p>
+      </div>
+      <div>
+        <h3>You widen your funnel.</h3>
+        <p>You see startups you would have missed in manual searches.</p>
+      </div>
+      <div>
+        <h3>You choose with confidence.</h3>
+        <p>Every search is held to the same standard, and your jury or committee works from a structured, well-documented process.</p>
+      </div>
+    </div>
+    <a href="#sample" class="link-arrow">See it in your sector: request a free sample list<svg width="18" height="18" fill="currentColor" aria-hidden="true"><use href="#arrow"/></svg></a>
+  </section>
+
+  <section id="founder" class="founder">
+    <div>
+      <span class="eyebrow">Who runs it</span>
+      <h2>Navojit Dastidar</h2>
+      <p class="bio">Navojit has spent his career on both sides of startup selection. As Operations Lead at AMS Institute he runs Amsterdam Circular, a City of Amsterdam–backed program for circular economy startups: scouting high-potential ventures, running the top-10 selection with the jury, and onboarding startups and experts.</p>
+      <p class="bio">He holds joint master's degrees in Industrial Ecology (TU Delft and Leiden) and Circular Economy (Graz).</p>
+    </div>
+    <div class="founder-side">
+      <div class="edu-logos">
+        <img class="logo" src="assets/logos/tudelft.png" alt="TU Delft" title="TU Delft">
+        <img class="logo" src="assets/logos/leiden.png" alt="Leiden University" title="Leiden University">
+        <img class="logo" src="assets/logos/graz.png" alt="University of Graz" title="University of Graz">
+        <img class="logo" src="assets/logos/nsu.png" alt="North South University" title="North South University">
+      </div>
+      <div class="career">
+        <p><span>Operations Lead, <em>AMS Institute</em></span><span class="leader"></span><span class="years">2024–now</span></p>
+        <p><span>Investment Analyst, <em>Rockstart</em></span><span class="leader"></span><span class="years">2022–23</span></p>
+        <p><span>Associate, <em>Bangladesh Angels</em></span><span class="leader"></span><span class="years">2020–22</span></p>
+        <p><span>Ventures Intern, <em>Plug and Play</em></span><span class="leader"></span><span class="years">2021–22</span></p>
+        <p><span>Ventures Intern, <em>Metabolic</em></span><span class="leader"></span><span class="years">2021</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="sample" class="sample">
+    <div class="rule-double"></div>
+    <h3>Request a free sample list in your sector.</h3>
+    <p class="lead">Tell us the sectors you care about, such as circular economy, climate tech, or health tech.</p>
+    <form id="sample-form" novalidate>
+      <input class="input email" name="email" type="email" required placeholder="you@program.com" aria-label="Email address" autocomplete="email">
+      <input class="input sector" name="sector" type="text" placeholder="Sector, e.g. climate tech" aria-label="Sector">
+      <button type="submit" class="btn btn-lg">Request sample<svg width="18" height="18" fill="currentColor" aria-hidden="true"><use href="#arrow"/></svg></button>
+    </form>
+    <p id="sample-thanks" class="thanks" hidden>Thanks. Navojit will be in touch with your sample list.</p>
+  </section>
+
+  <footer>
+    <span>Scout Engine · Amsterdam</span>
+    <a href="https://www.linkedin.com/in/navojit-dastidar" target="_blank" rel="noopener">LinkedIn</a>
+  </footer>
+</div>
+
+<script>
+  // Form delivery. Set FORM_ENDPOINT to a form service URL (e.g. Formspree,
+  // Basin, Netlify Forms) to POST submissions. If left empty, the form falls
+  // back to opening the visitor's email client addressed to CONTACT_EMAIL.
+  var FORM_ENDPOINT = '';
+  var CONTACT_EMAIL = 'hello@scoutengine.example';
+
+  (function () {
+    var form = document.getElementById('sample-form');
+    var thanks = document.getElementById('sample-thanks');
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = form.email.value.trim();
+      var sector = form.sector.value.trim();
+      if (!form.email.checkValidity()) { form.email.reportValidity(); return; }
+
+      function done() { form.hidden = true; thanks.hidden = false; }
+
+      if (FORM_ENDPOINT) {
+        fetch(FORM_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ email: email, sector: sector })
+        }).then(done, done);
+      } else {
+        var subject = 'Sample list request' + (sector ? ': ' + sector : '');
+        var body = 'Email: ' + email + '\nSector: ' + (sector || '(not specified)');
+        window.location.href = 'mailto:' + CONTACT_EMAIL +
+          '?subject=' + encodeURIComponent(subject) +
+          '&body=' + encodeURIComponent(body);
+        done();
+      }
+    });
+  })();
+</script>
+</body>
+</html>
