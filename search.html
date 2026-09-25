@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Try the search · Scout Engine</title>
+<meta name="description" content="Build a LinkedIn-scoped search for early-stage startups by sector, place and recency, and see the raw first pass Scout Engine starts from.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f3f2f2'/%3E%3Ctext x='50' y='64' text-anchor='middle' font-family='Georgia,serif' font-size='40' fill='%23201e1d'%3ESE%3C/text%3E%3Crect x='30' y='72' width='40' height='3' fill='%230088b0'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="arrow" viewBox="0 0 256 256">
+    <polygon points="216 128 144 200 144 56 216 128" opacity="0.3"></polygon>
+    <path d="M221.66,122.34l-72-72A8,8,0,0,0,136,56v64H40a8,8,0,0,0,0,16h96v64a8,8,0,0,0,13.66,5.66l72-72A8,8,0,0,0,221.66,122.34ZM152,180.69V75.31L204.69,128Z"></path>
+  </symbol>
+</svg>
+
+<nav class="nav">
+  <a class="nav-brand" href="index.html">Scout Engine</a>
+  <a class="nav-link" href="index.html#receive">What you receive</a>
+  <a class="nav-link" href="search.html" aria-current="page">Try the search</a>
+  <a class="nav-link" href="index.html#founder">Who runs it</a>
+  <a class="nav-link" href="index.html#sample">Contact</a>
+  <a href="index.html#sample" class="btn">Request a sample list<svg width="16" height="16" fill="currentColor" aria-hidden="true"><use href="#arrow"/></svg></a>
+</nav>
+
+<div class="wrap">
+
+  <section id="search" class="search search-page">
+    <span class="eyebrow">Try our agentic search</span>
+    <h2 class="section-title">See the first pass for yourself.</h2>
+    <p class="lead">Six steps, one tab each: search LinkedIn, screen on logo, name and description, review the unsure ones, then check each survivor's website. Every decision stays visible with its reasons.</p>
+
+    <div class="pipeline" id="pipeline">
+      <nav class="tabs" aria-label="Pipeline steps">
+        <button type="button" class="tab is-active" data-step="1"><span class="tab-n">1</span><span class="tab-t">Search</span><span class="tab-c" id="tabc-1"></span></button>
+        <button type="button" class="tab" data-step="2" disabled><span class="tab-n">2</span><span class="tab-t">First pass</span><span class="tab-c" id="tabc-2"></span></button>
+        <button type="button" class="tab" data-step="3" disabled><span class="tab-n">3</span><span class="tab-t">Review unsure</span><span class="tab-c" id="tabc-3"></span></button>
+        <button type="button" class="tab" data-step="4" disabled><span class="tab-n">4</span><span class="tab-t">Passed first pass</span><span class="tab-c" id="tabc-4"></span></button>
+        <button type="button" class="tab" data-step="5" disabled><span class="tab-n">5</span><span class="tab-t">Second pass</span><span class="tab-c" id="tabc-5"></span></button>
+        <button type="button" class="tab" data-step="6" disabled><span class="tab-n">6</span><span class="tab-t">Ranked report</span><span class="tab-c" id="tabc-6"></span></button>
+      </nav>
+      <div class="panels">
+
+        <section class="panel is-active" id="stage-1">
+          <h3 class="stage-title"><span class="stage-n">Step 1</span>Search LinkedIn company pages</h3>
+          <form id="search-form" novalidate>
+      <label>Sector or keyword
+        <input class="input" name="sector" type="text" value="circular economy" placeholder="e.g. climate tech" autocomplete="off">
+      </label>
+      <label>City or region
+        <input class="input" name="location" type="text" value="Amsterdam" placeholder="e.g. Rotterdam" autocomplete="off">
+      </label>
+      <label>Country
+        <select class="input" name="country">
+          <option value="nl" selected>Netherlands</option>
+          <option value="be">Belgium</option>
+          <option value="de">Germany</option>
+          <option value="uk">United Kingdom</option>
+          <option value="fr">France</option>
+          <option value="dk">Denmark</option>
+          <option value="se">Sweden</option>
+          <option value="">Anywhere</option>
+        </select>
+      </label>
+      <label>Pages first seen since
+        <input class="input" name="since" type="date" value="2025-01-01">
+      </label>
+      <label>Max company size
+        <select class="input" name="maxSize">
+          <option value="10">1 to 10 people</option>
+          <option value="50" selected>1 to 50 people</option>
+          <option value="200">1 to 200 people</option>
+          <option value="">Any size</option>
+        </select>
+      </label>
+      <label class="wide">Brief for the agent (optional)
+        <textarea class="input" name="brief" rows="3" placeholder="Anything that helps: what you are looking for, searches to try, places to include, things to skip. e.g. Products or software for reuse and repair, B2B. Try materials passport and refurbished electronics. Include Rotterdam. No consultancies."></textarea>
+      </label>
+      <div class="actions">
+        <button type="submit" class="btn btn-lg">Run search<svg width="18" height="18" fill="currentColor" aria-hidden="true"><use href="#arrow"/></svg></button>
+      </div>
+    </form>
+
+          <p id="search-status" class="status" hidden></p>
+          <div id="search-plan" class="plan" hidden><p class="trace-head" id="plan-head">The agent is choosing its key terms…</p><div class="cloud" id="cloud"></div></div>
+          <div id="search-trace" class="trace" hidden></div>
+          <div class="stage-actions" id="results-bar" hidden><button type="button" id="results-toggle" class="btn btn-quiet">Show companies</button><span class="stage-note">The full list is long; the first pass is where it gets useful.</span></div>
+          <ol id="search-results" class="results results-compact" hidden></ol>
+          <div class="stage-actions" id="screen-bar" hidden><button type="button" id="screen-run" class="btn">Run first pass<svg width="16" height="16" fill="currentColor" aria-hidden="true"><use href="#arrow"/></svg></button><span id="screen-status" class="stage-note"></span></div>
+        </section>
+
+        <section class="panel" id="stage-2">
+          <h3 class="stage-title"><span class="stage-n">Step 2</span>First pass: logo, name, description</h3>
+          <p id="screen-summary" class="status"></p>
+          <p class="stage-help">Every company stays in the list with the rules that fired and the model's notes. Use <em>override</em> on a row to flip a decision you disagree with; overrides are marked with what the machine said.</p>
+          <div id="screen-filter" class="filter"></div>
+          <ol id="screen-results" class="results"></ol>
+          <div class="stage-actions"><button type="button" id="review-go" class="btn">Review the unsure ones<svg width="16" height="16" fill="currentColor" aria-hidden="true"><use href="#arrow"/></svg></button></div>
+        </section>
+
+        <section class="panel" id="stage-3">
+          <h3 class="stage-title"><span class="stage-n">Step 3</span>Review unsure</h3>
+          <p id="review-summary" class="status"></p>
+          <ol id="review-results" class="results"></ol>
+          <div class="stage-actions"><button type="button" id="passed-go" class="btn">Show what passed<svg width="16" height="16" fill="currentColor" aria-hidden="true"><use href="#arrow"/></svg></button><span id="review-note" class="stage-note"></span></div>
+        </section>
+
+        <section class="panel" id="stage-4">
+          <h3 class="stage-title"><span class="stage-n">Step 4</span>Passed the first pass</h3>
+          <p id="passed-summary" class="status"></p>
+          <ol id="passed-results" class="results results-compact"></ol>
+          <div class="stage-actions"><button type="button" id="second-run" class="btn">Run second pass<svg width="16" height="16" fill="currentColor" aria-hidden="true"><use href="#arrow"/></svg></button><button type="button" id="passed-csv" class="btn btn-quiet">Download CSV</button><span id="second-status" class="stage-note"></span></div>
+        </section>
+
+        <section class="panel" id="stage-5">
+          <h3 class="stage-title"><span class="stage-n">Step 5</span>Second pass: inside the profile and the website</h3>
+          <p id="second-summary" class="status"></p>
+          <p class="stage-help">Each company's website is fetched and screenshotted. We check the domain, founder titles, the menu (Product, Solution, Pricing, Shop), the calls to action, the colours and rounded shapes, and the model judges the screenshot. Confirm or eliminate any row to settle it.</p>
+          <div id="second-filter" class="filter"></div>
+          <ol id="second-results" class="results"></ol>
+          <div class="stage-actions"><button type="button" id="final-go" class="btn">Rank and report<svg width="16" height="16" fill="currentColor" aria-hidden="true"><use href="#arrow"/></svg></button><span id="final-note" class="stage-note"></span></div>
+        </section>
+
+        <section class="panel" id="stage-6">
+          <h3 class="stage-title"><span class="stage-n">Step 6</span>Ranked report</h3>
+          <p id="final-summary" class="status"></p>
+          <div class="stage-actions"><button type="button" id="report-run" class="btn">Generate report<svg width="16" height="16" fill="currentColor" aria-hidden="true"><use href="#arrow"/></svg></button><button type="button" id="report-download" class="btn btn-quiet" hidden>Download report</button><button type="button" id="report-print" class="btn btn-quiet" hidden>Print</button><button type="button" id="final-csv" class="btn btn-quiet">Download CSV</button><span id="report-status" class="stage-note"></span></div>
+          <article id="report" class="report" hidden></article>
+        </section>
+
+      </div>
+    </div>
+  </section>
+
+
+  <footer>
+    <span>Scout Engine · Amsterdam</span>
+    <a href="https://www.linkedin.com/in/navojit-dastidar" target="_blank" rel="noopener">LinkedIn</a>
+  </footer>
+</div>
+
+<script>
+  // Step-by-step pipeline shown as side tabs. Only the active step is visible;
+  // every step keeps its output so any decision can be inspected. Endpoints:
+  // POST /api/search, /api/screen, /api/second (server.js, screen.js, second.js).
+  (function () {
+    var form = document.getElementById('search-form');
+    var $ = function (id) { return document.getElementById(id); };
+    var state = fresh();
+    function fresh() { return { results: [], screened: [], overrides: {}, reviewed: {}, second: [], secondDecisions: {}, model: null, reached: 1, view: { screen: { filter: 'all', sort: 'status' }, second: { filter: 'all', sort: 'status' } } }; }
+
+    function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+    function activate(n) {
+      tabs.forEach(function (t) { t.classList.toggle('is-active', Number(t.dataset.step) === n); });
+      for (var i = 1; i <= 6; i++) $('stage-' + i).classList.toggle('is-active', i === n);
+      $('pipeline').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    function reach(n, reset) {
+      state.reached = reset ? n : Math.max(state.reached, n);
+      tabs.forEach(function (t) { var k = Number(t.dataset.step); t.disabled = k > state.reached; t.classList.toggle('is-done', k < n); });
+      if (reset) for (var i = n + 1; i <= 6; i++) $('tabc-' + i).textContent = '';
+      activate(n);
+    }
+    // A first-pass decision made after the second pass ran makes that pass stale.
+    function invalidateSecond() {
+      if (!state.second.length) return;
+      state.second = []; state.secondDecisions = {}; state.secondMeta = null; state.report = null;
+      $('tabc-5').textContent = ''; $('tabc-6').textContent = '';
+      $('second-status').textContent = 'First-pass decisions changed; run the second pass again.';
+      if (state.reached > 4) { state.reached = 4; tabs.forEach(function (t) { t.disabled = Number(t.dataset.step) > 4; }); if (current() > 4) activate(4); }
+    }
+    tabs.forEach(function (t) { t.addEventListener('click', function () { if (!t.disabled) activate(Number(t.dataset.step)); }); });
+    function current() { var t = tabs.filter(function (x) { return x.classList.contains('is-active'); })[0]; return t ? Number(t.dataset.step) : 1; }
+    function step(delta) { var n = current() + delta; if (n >= 1 && n <= state.reached) activate(n); }
+    document.addEventListener('keydown', function (e) {
+      if (e.target.matches('input, select, textarea')) return;
+      if (e.key === 'ArrowRight') step(1); else if (e.key === 'ArrowLeft') step(-1);
+    });
+    var touchX = null;
+    var panels = document.querySelector('.panels');
+    panels.addEventListener('touchstart', function (e) { touchX = e.touches[0].clientX; }, { passive: true });
+    panels.addEventListener('touchend', function (e) {
+      if (touchX == null) return;
+      var dx = e.changedTouches[0].clientX - touchX; touchX = null;
+      if (Math.abs(dx) > 70) step(dx < 0 ? 1 : -1);
+    }, { passive: true });
+
+    // LinkedIn renders the company-size line in the language of the country
+    // mirror, and Google only matches that exact wording.
+    var SIZE_WORDS = { nl: ['medewerker', 'medewerkers'], de: ['Mitarbeiter', 'Mitarbeiter'], fr: ['employé', 'employés'], dk: ['ansat', 'ansatte'], se: ['anställd', 'anställda'], be: ['medewerker', 'medewerkers'], uk: ['employee', 'employees'] };
+    var SIZE_BANDS = [[1, '1'], [10, '2-10'], [50, '11-50'], [200, '51-200']];
+    function sizeClause(country, maxSize) {
+      if (!maxSize) return '';
+      var w = SIZE_WORDS[country] || ['employee', 'employees'];
+      var bands = SIZE_BANDS.filter(function (b) { return b[0] <= maxSize; }).map(function (b) { return '"' + b[1] + ' ' + (b[0] === 1 ? w[0] : w[1]) + '"'; });
+      return bands.length ? '(' + bands.join(' OR ') + ')' : '';
+    }
+    function buildQuery() {
+      var sector = form.sector.value.trim(), location = form.location.value.trim(), country = form.country.value, since = form.since.value, maxSize = Number(form.maxSize.value);
+      var parts = ['site:' + (country ? country + '.' : '') + 'linkedin.com/company'];
+      if (sector) parts.push(/\s/.test(sector) ? '"' + sector + '"' : sector);
+      if (location) parts.push(location);
+      var size = sizeClause(country, maxSize);
+      if (size) parts.push(size);
+      if (since) parts.push('after:' + since);
+      return parts.join(' ');
+    }
+    function post(url, body) {
+      return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(body) })
+        .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error(d.error || r.statusText); return d; }); });
+    }
+    function esc(t) { return String(t).replace(/[&<>"']/g, function (ch) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]; }); }
+    function plain(t) { return String(t || '').replace(/\*\*|__|`/g, '').replace(/^\s*[-*#]+\s*/gm, '').replace(/\s*\n+\s*/g, ' ').trim(); }
+    function stream(url, body, onEvent) {
+      return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).then(function (r) {
+        if (!r.ok) return r.json().then(function (d) { throw new Error(d.error || r.statusText); });
+        var reader = r.body.getReader(), dec = new TextDecoder(), buf = '';
+        function pump() {
+          return reader.read().then(function (x) {
+            if (x.done) return;
+            buf += dec.decode(x.value, { stream: true });
+            var i;
+            while ((i = buf.indexOf('\n\n')) > -1) {
+              var chunk = buf.slice(0, i); buf = buf.slice(i + 2);
+              chunk.split('\n').forEach(function (line) { if (line.indexOf('data: ') === 0) { try { onEvent(JSON.parse(line.slice(6))); } catch (_) {} } });
+            }
+            return pump();
+          });
+        }
+        return pump();
+      });
+    }
+    // Word cloud of the agent's plan: terms pop in scattered, then glide into
+    // priority order. Positions are absolute so the move is one CSS transition.
+    var cloud = { items: [], nodes: [], ordered: false };
+    var GROUP_CLASS = { seed: 'g-seed', 'local language': 'g-lang', 'adjacent term': 'g-adj', 'nearby place': 'g-place', 'startup framing': 'g-frame', 'user suggestion': 'g-user', adaptive: 'g-adaptive' };
+    function cloudReset() { cloud = { items: [], nodes: [], ordered: false }; $('cloud').innerHTML = ''; $('cloud').style.height = ''; }
+    function cloudAdd(item, index, animate) {
+      var box = $('cloud');
+      var n = el('div', 'term ' + (GROUP_CLASS[item.group] || 'g-adj'));
+      n.appendChild(el('span', 'term-n', ''));
+      n.appendChild(el('span', 'term-t', item.term));
+      n.appendChild(el('span', 'term-q', item.query));
+      n.appendChild(el('span', 'term-c', ''));
+      n.title = item.why || '';
+      var w = box.clientWidth || 800, h = 260;
+      var size = 1.35 - Math.min(index, 10) * 0.06; // earlier priorities a little bigger
+      n.style.fontSize = size + 'em';
+      // scatter: a jittered grid so terms rarely overlap
+      var cols = 4, cell = w / cols, row = Math.floor(index / cols), col = index % cols;
+      var est = 40 + item.term.length * 9 * size; // rough chip width so it stays inside the box
+      var left = Math.min(Math.max(10, col * cell + 10 + Math.random() * Math.max(0, cell - est)), Math.max(10, w - est - 10)), top = 12 + (row % 3) * (h / 3) + Math.random() * 40;
+      n.style.left = left + 'px'; n.style.top = top + 'px';
+      n.style.transform = 'rotate(' + ((Math.random() * 10) - 5) + 'deg) scale(0.2)';
+      n.style.opacity = '0';
+      box.appendChild(n);
+      cloud.items[index] = item; cloud.nodes[index] = n;
+      box.style.height = Math.max(parseInt(box.style.height || '0', 10), h + 40) + 'px';
+      setTimeout(function () { n.style.opacity = '1'; n.style.transform = 'rotate(' + ((Math.random() * 10) - 5) + 'deg) scale(1)'; }, animate ? 90 * index : 0);
+    }
+    function cloudOrder() {
+      cloud.ordered = true;
+      var box = $('cloud');
+      var y = 0;
+      cloud.nodes.forEach(function (n, i) {
+        if (!n) return;
+        n.classList.add('is-ordered');
+        n.style.fontSize = '';
+        n.querySelector('.term-n').textContent = String(i + 1).padStart(2, '0');
+        n.style.left = '0px'; n.style.top = y + 'px'; n.style.transform = 'none';
+        y += 58;
+      });
+      box.style.height = (y + 8) + 'px';
+      box.classList.add('is-list');
+    }
+    function cloudAppend(item) {
+      var i = item.plan_index != null ? item.plan_index : cloud.nodes.length;
+      cloudAdd(item, i, false);
+      var n = cloud.nodes[i];
+      requestAnimationFrame(function () { n.classList.add('is-ordered'); n.querySelector('.term-n').textContent = String(i + 1).padStart(2, '0'); n.style.left = '0px'; n.style.top = (i * 58) + 'px'; n.style.transform = 'none'; n.style.fontSize = ''; n.style.opacity = '1'; $('cloud').style.height = (i * 58 + 66) + 'px'; });
+    }
+    function cloudMark(index, state, text) {
+      var n = cloud.nodes[index]; if (!n) return;
+      n.classList.remove('is-running', 'is-done', 'is-skipped');
+      n.classList.add('is-' + state);
+      n.querySelector('.term-c').textContent = text || '';
+    }
+    function firstStatus(c) { return state.overrides[c.slug] || state.reviewed[c.slug] || c.status; }
+    function secondStatus(c) { return state.secondDecisions[c.slug] || (c.second && c.second.status) || 'unsure'; }
+    function label(st) { return st === 'kept' ? 'Kept' : st === 'eliminated' ? 'Eliminated' : 'Unsure'; }
+    function csv(items, cols, name) {
+      var lines = [cols.map(function (k, i) { return typeof k === 'function' ? 'col' + (i + 1) : k; }).join(',')].concat(items.map(function (x) {
+        return cols.map(function (k) { var v = typeof k === 'function' ? k(x) : x[k]; v = String(v == null ? '' : v); if (/^[=+\-@\t\r]/.test(v)) v = "'" + v; return '"' + v.replace(/"/g, '""') + '"'; }).join(',');
+      }));
+      var a = el('a'); a.href = URL.createObjectURL(new Blob([lines.join('\n')], { type: 'text/csv' })); a.download = name; a.click();
+    }
+
+    // ---------------------------------------------------------------- rows
+    function row(c, i, opts) {
+      opts = opts || {};
+      var status = opts.status;
+      var li = el('li', status ? 'is-' + status : '');
+      li.appendChild(el('span', 'n', String(i + 1).padStart(2, '0')));
+      var body = el('div');
+      var head = el('div', 'head');
+      if (c.logo) { var img = el('img', 'logo'); img.src = c.logo; img.alt = ''; img.loading = 'lazy'; head.appendChild(img); }
+      var a = el('a', null, c.name || c.url); a.href = c.url; a.target = '_blank'; a.rel = 'noopener'; head.appendChild(a);
+      if (status) head.appendChild(el('span', 'badge badge-' + status, label(status)));
+      if (opts.tag) head.appendChild(el('span', 'tag', opts.tag));
+      body.appendChild(head);
+      body.appendChild(el('span', 'url', c.url.replace(/^https?:\/\//, '')));
+      var facts = [c.industry, c.size, c.founded ? 'founded ' + c.founded : '', c.hq, c.type].filter(Boolean);
+      if (facts.length) body.appendChild(el('p', 'facts', facts.join(' · ')));
+      if (opts.text !== false) {
+        var text = c.tagline && c.description ? c.tagline + ' — ' + c.description : (c.description || c.tagline || c.snippet);
+        if (text) body.appendChild(el('p', null, text.length > 360 ? text.slice(0, 357) + '…' : text));
+      }
+      if (opts.extra) { var ex = opts.extra(c); if (ex) body.appendChild(ex); }
+      if (opts.buttons) body.appendChild(opts.buttons(c));
+      li.appendChild(body);
+      return li;
+    }
+    function why(status, items) {
+      var box = el('div', 'why why-' + status);
+      box.appendChild(el('strong', null, 'Why ' + label(status).toLowerCase()));
+      var ul = el('ul');
+      items.forEach(function (it) {
+        var li = el('li', it.k ? 'crit' : '');
+        if (it.k) { li.appendChild(el('span', 'crit-k', it.k)); li.appendChild(document.createTextNode(' ' + it.t)); }
+        else li.textContent = it.t;
+        ul.appendChild(li);
+      });
+      if (!ul.children.length) ul.appendChild(el('li', null, 'No reasons recorded.'));
+      box.appendChild(ul);
+      return box;
+    }
+    function crit(obj, keys) {
+      return keys.filter(function (k) { return obj[k]; }).map(function (k) { return { k: k.charAt(0).toUpperCase() + k.slice(1) + ' ' + obj[k].score + '/5', t: obj[k].note }; });
+    }
+    function about(c) {
+      var l = c.llm && !c.llm.error ? c.llm : null;
+      if (!l || !(l.summary || l.usp)) return null;
+      var box = el('div', 'about');
+      if (l.summary) { var p1 = el('p'); p1.appendChild(el('strong', null, 'What they do ')); p1.appendChild(document.createTextNode(l.summary)); box.appendChild(p1); }
+      if (l.usp) { var p2 = el('p'); p2.appendChild(el('strong', null, 'USP ')); p2.appendChild(document.createTextNode(l.usp)); box.appendChild(p2); }
+      return box;
+    }
+    function firstExtra(c) {
+      var wrap = el('div');
+      var a = about(c); if (a) wrap.appendChild(a);
+      wrap.appendChild(firstWhy(c));
+      return wrap;
+    }
+    function firstWhy(c) {
+      var items = [];
+      if (state.overrides[c.slug]) items.push({ t: 'You overrode the machine decision (' + c.status + ').' });
+      if (state.reviewed[c.slug]) items.push({ t: 'You ' + (state.reviewed[c.slug] === 'kept' ? 'confirmed' : 'unconfirmed') + ' this in the review step.' });
+      if (c.fetch_error) items.push({ t: 'LinkedIn page could not be read, so this is judged on the search snippet only.' });
+      (c.rules && c.rules.reasons || []).forEach(function (r) { items.push({ t: 'Rule: ' + r + '.' }); });
+      if (c.llm && c.llm.error) items.push({ t: 'Model: ' + c.llm.error });
+      if (c.llm && !c.llm.error) { items.push({ t: c.llm.reason }); items = items.concat(crit(c.llm, ['logo', 'name', 'description'])); }
+      return why(firstStatus(c), items);
+    }
+    function decide(c, labels, get, set) {
+      var box = el('div', 'decide');
+      var cur = get(c);
+      [['kept', labels[0]], ['eliminated', labels[1]]].forEach(function (pair) {
+        var b = el('button', 'btn btn-sm' + (cur === pair[0] ? ' is-on' : ''), pair[1]); b.type = 'button';
+        b.onclick = function () { set(c, pair[0]); };
+        box.appendChild(b);
+      });
+      return box;
+    }
+
+    // -------------------------------------------------------------- step 1
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var q = buildQuery();
+      var btn = form.querySelector('button[type=submit]');
+      btn.disabled = true;
+      state = fresh();
+      reach(1, true);
+      var st = $('search-status'); st.hidden = false; st.textContent = 'Searching…';
+      var trace = $('search-trace'); trace.innerHTML = ''; trace.hidden = true; $('search-plan').hidden = true;
+      $('search-results').innerHTML = ''; $('search-results').hidden = true; $('results-bar').hidden = true;
+      $('screen-bar').hidden = true;
+      var brief = { description: form.brief.value.trim(), suggestions: [], notes: '' };
+      state.brief = brief;
+      var params = { query: q, sector: form.sector.value.trim(), location: form.location.value.trim(), country: form.country.value, since: form.since.value, maxSize: form.maxSize.value, sizeClause: sizeClause(form.country.value, Number(form.maxSize.value)), brief: brief };
+
+      function showResults(items, provider, notes, extra) {
+        st.innerHTML = '';
+        st.appendChild(el('span', null, items.length + (items.length === 1 ? ' company' : ' companies') + ' gathered via ' + (provider === 'serper' ? 'Google' : 'Brave Search') + (extra ? ' ' + extra : '') + ' for '));
+        st.appendChild(el('code', null, q));
+        (notes || []).forEach(function (n) { st.appendChild(el('p', 'warn', n)); });
+        if (!items.length) st.appendChild(el('p', null, 'No companies found. Try a broader keyword or an earlier date.'));
+        state.results = items; state.query = q;
+        var list = $('search-results'); list.innerHTML = ''; list.hidden = true;
+        items.forEach(function (c, i) { list.appendChild(row(c, i, { text: false, tag: c.sources && c.sources.length > 1 ? 'found by ' + c.sources.length + ' queries' : '', extra: function (cc) { return cc.snippet ? el('p', 'facts', cc.snippet.length > 140 ? cc.snippet.slice(0, 137) + '…' : cc.snippet) : null; } })); });
+        $('results-bar').hidden = !items.length;
+        $('results-toggle').textContent = 'Show the ' + items.length + ' companies';
+        $('tabc-1').textContent = items.length;
+        $('screen-bar').hidden = !items.length;
+        $('screen-status').textContent = items.length > 100 ? 'The first pass takes at most 100 companies; only the first 100 will be screened.' : '';
+      }
+
+      var done;
+      var planBox = $('search-plan'); planBox.hidden = false; cloudReset();
+      $('plan-head').textContent = 'The agent is choosing its key terms…';
+      trace.hidden = false;
+      var ol = el('div', 'trace-list'); trace.appendChild(ol);
+      var counter = el('p', 'trace-foot', 'Running the seed query…'); trace.appendChild(counter);
+      var pending = [];
+      done = stream('/api/discover', params, function (ev) {
+        if (ev.type === 'plan') {
+          cloud.planReceived = true;
+          $('plan-head').textContent = 'Key terms the agent chose, popping in… then sorted by priority';
+          ev.items.forEach(function (it, i) { cloudAdd(it, i, true); });
+          var wait = 90 * ev.items.length + 1400;
+          setTimeout(function () {
+            cloudOrder();
+            $('plan-head').textContent = 'Search plan, in the order it runs';
+            pending.forEach(function (fn) { fn(); }); pending = [];
+            cloud.ready = true;
+          }, wait);
+          cloudMark(0, 'done', cloud.seedText || '');
+        } else if (ev.type === 'query') {
+          var apply = function () {
+            var idx = ev.plan_index != null ? ev.plan_index : cloud.nodes.length - 1;
+            cloudMark(idx, 'done', '+' + ev.added + ' new · ' + ev.found + ' found' + (ev.rate_limited ? ' · rate limited' : ''));
+            if (idx + 1 < cloud.nodes.length && cloud.items[idx + 1] && !cloud.nodes[idx + 1].classList.contains('is-done')) cloudMark(idx + 1, 'running', 'searching…');
+            counter.textContent = 'Query ' + ol.dataset.count + ' done, ' + ev.total + ' companies so far.';
+          };
+          if (ev.plan_index === 0 && !cloud.nodes.length) cloud.seedText = '+' + ev.added + ' new · ' + ev.found + ' found';
+          ol.dataset.count = String(Number(ol.dataset.count || 0) + 1);
+          if (cloud.ready || ev.plan_index === 0) apply(); else pending.push(apply);
+        } else if (ev.type === 'plan-add') {
+          var add = function () { cloudAppend(ev.item); cloudMark(ev.item.plan_index != null ? ev.item.plan_index : cloud.nodes.length - 1, 'running', 'searching…'); };
+          if (cloud.ready) add(); else pending.push(add);
+        } else if (ev.type === 'skip') {
+          var sk = function () { cloudMark(ev.plan_index, 'skipped', 'skipped: ' + ev.reason); };
+          if (cloud.ready) sk(); else pending.push(sk);
+        } else if (ev.type === 'note') {
+          ol.appendChild(el('p', 'trace-note', plain(ev.text)));
+        } else if (ev.type === 'done') {
+          var fin = function () {
+            counter.textContent = 'Agent finished: ' + ev.queries.length + (ev.queries.length === 1 ? ' query' : ' queries') + ', ' + ev.companies.length + ' companies. ' + plain(ev.summary);
+            showResults(ev.companies, ev.provider, ev.notes, 'across ' + ev.queries.length + ' queries');
+          };
+          if (cloud.ready || !cloud.planReceived) { if (!cloud.planReceived) { planBox.hidden = true; pending.forEach(function (fn) { fn(); }); pending = []; } fin(); } else pending.push(fin);
+        } else if (ev.type === 'error') {
+          pending = []; planBox.hidden = true;
+          st.textContent = 'Search failed: ' + ev.error;
+        }
+      });
+      done.catch(function (err) { st.textContent = 'Search failed: ' + (err && err.message ? err.message : 'please try again.'); })
+      .then(function () { btn.disabled = false; });
+    });
+
+    // Filter and sort bar shared by the first- and second-pass lists.
+    var ORDER = { kept: 0, unsure: 1, eliminated: 2 };
+    function filterBar(holder, view, items, statusOf, rerender) {
+      var counts = { all: items.length, kept: 0, unsure: 0, eliminated: 0 };
+      items.forEach(function (x) { counts[statusOf(x)]++; });
+      holder.innerHTML = '';
+      var show = el('span', 'filter-label', 'Show');
+      holder.appendChild(show);
+      [['all', 'All'], ['kept', 'Kept'], ['unsure', 'Unsure'], ['eliminated', 'Eliminated']].forEach(function (f) {
+        var b = el('button', 'chip' + (view.filter === f[0] ? ' is-on' : '') + (f[0] !== 'all' ? ' chip-' + f[0] : ''), f[1] + ' ' + counts[f[0]]);
+        b.type = 'button'; b.onclick = function () { view.filter = f[0]; rerender(); };
+        holder.appendChild(b);
+      });
+      var sort = el('span', 'filter-label', 'Order');
+      holder.appendChild(sort);
+      [['status', 'Kept first'], ['order', 'Search order']].forEach(function (o) {
+        var b = el('button', 'chip' + (view.sort === o[0] ? ' is-on' : ''), o[1]);
+        b.type = 'button'; b.onclick = function () { view.sort = o[0]; rerender(); };
+        holder.appendChild(b);
+      });
+    }
+    function arrange(items, view, statusOf) {
+      var idx = items.map(function (x, i) { return { x: x, i: i }; });
+      if (view.filter !== 'all') idx = idx.filter(function (p) { return statusOf(p.x) === view.filter; });
+      if (view.sort === 'status') idx.sort(function (a, b) { return (ORDER[statusOf(a.x)] - ORDER[statusOf(b.x)]) || (a.i - b.i); });
+      return idx;
+    }
+
+    $('results-toggle').addEventListener('click', function () {
+      var list = $('search-results'); list.hidden = !list.hidden;
+      $('results-toggle').textContent = (list.hidden ? 'Show the ' : 'Hide the ') + state.results.length + ' companies';
+    });
+
+    // -------------------------------------------------------------- step 2
+    $('screen-run').addEventListener('click', function () {
+      if (!state.results.length) return;
+      var btn = $('screen-run'); btn.disabled = true;
+      $('screen-status').textContent = 'Reading ' + state.results.length + ' LinkedIn pages, applying the rules and asking the model… roughly ' + Math.max(1, Math.round(state.results.length * 2.5 / 60)) + (Math.round(state.results.length * 2.5 / 60) > 1 ? ' minutes.' : ' minute.');
+      post('/api/screen', { companies: state.results.slice(0, 100), brief: state.brief })
+      .then(function (data) {
+        state.screened = data.companies; state.overrides = {}; state.reviewed = {}; state.model = data.model;
+        state.second = []; state.secondDecisions = {};
+        $('screen-status').textContent = '';
+        renderScreen();
+        reach(2, true);
+      }).catch(function (err) { $('screen-status').textContent = 'First pass failed: ' + (err && err.message ? err.message : 'please try again.'); })
+      .then(function () { btn.disabled = false; });
+    });
+    function firstCounts() {
+      var c = { total: state.screened.length, kept: 0, eliminated: 0, unsure: 0 };
+      state.screened.forEach(function (x) { c[firstStatus(x)]++; });
+      return c;
+    }
+    function renderScreen() {
+      var c = firstCounts();
+      var ov = Object.keys(state.overrides).length;
+      $('screen-summary').textContent = c.total + ' screened · ' + c.eliminated + ' eliminated · ' + c.kept + ' kept · ' + c.unsure + ' unsure · ' + (state.model ? 'rules + ' + state.model : 'rules only, no model key set') + (ov ? ' · ' + ov + ' overridden by you' : '');
+      $('tabc-2').textContent = c.kept + '/' + c.total;
+      filterBar($('screen-filter'), state.view.screen, state.screened, firstStatus, renderScreen);
+      var list = $('screen-results'); list.innerHTML = '';
+      var shown = arrange(state.screened, state.view.screen, firstStatus);
+      if (!shown.length) list.appendChild(el('li', 'empty', 'Nothing matches this filter.'));
+      shown.forEach(function (p) {
+        var x = p.x, i = p.i;
+        list.appendChild(row(x, i, {
+          status: firstStatus(x),
+          tag: state.overrides[x.slug] ? 'overridden, machine said ' + x.status : (state.reviewed[x.slug] ? 'decided by you in review' : ''),
+          extra: firstExtra,
+          buttons: function (cc) { return decide(cc, ['Override: keep', 'Override: eliminate'], firstStatus, function (c2, v) { if (c2.status === v) delete state.overrides[c2.slug]; else state.overrides[c2.slug] = v; delete state.reviewed[c2.slug]; invalidateSecond(); renderScreen(); }); }
+        }));
+      });
+      $('review-go').textContent = c.unsure ? 'Review the ' + c.unsure + ' unsure' : 'Nothing unsure, show what passed';
+    }
+
+    // -------------------------------------------------------------- step 3
+    $('review-go').addEventListener('click', function () { renderReview(); reach(3); });
+    function renderReview() {
+      var unsure = state.screened.filter(function (x) { return !state.overrides[x.slug] && x.status === 'unsure'; });
+      var pending = unsure.filter(function (x) { return !state.reviewed[x.slug]; }).length;
+      $('review-summary').textContent = unsure.length ? unsure.length + ' unsure after the first pass. Confirm the ones that look like startups, unconfirm the rest.' + (pending ? ' ' + pending + ' still to decide.' : ' All decided.') : 'Nothing was unsure, so there is nothing to review.';
+      $('tabc-3').textContent = unsure.length ? (unsure.length - pending) + '/' + unsure.length : '';
+      var list = $('review-results'); list.innerHTML = '';
+      unsure.forEach(function (x, i) {
+        list.appendChild(row(x, i, {
+          status: firstStatus(x), tag: state.reviewed[x.slug] ? 'decided by you' : '', extra: firstExtra,
+          buttons: function (cc) { return decide(cc, ['Confirm: keep', 'Unconfirm: eliminate'], firstStatus, function (c2, v) { state.reviewed[c2.slug] = v; invalidateSecond(); renderReview(); renderScreen(); }); }
+        }));
+      });
+      $('review-note').textContent = pending ? 'Undecided companies stay out of the passed list.' : '';
+    }
+
+    // -------------------------------------------------------------- step 4
+    $('passed-go').addEventListener('click', function () { renderPassed(); reach(4); });
+    function passedFirst() { return state.screened.filter(function (x) { return firstStatus(x) === 'kept'; }); }
+    function renderPassed() {
+      var p = passedFirst(), c = firstCounts();
+      $('passed-summary').textContent = p.length + ' of ' + c.total + ' passed the first pass (' + c.eliminated + ' eliminated, ' + c.unsure + ' left undecided).';
+      $('tabc-4').textContent = p.length;
+      var list = $('passed-results'); list.innerHTML = '';
+      p.forEach(function (x, i) {
+        list.appendChild(row(x, i, { status: 'kept', text: false, tag: state.reviewed[x.slug] ? 'confirmed by you' : (state.overrides[x.slug] ? 'overridden by you' : ''), extra: function (cc) {
+          return el('p', 'facts', (cc.llm && !cc.llm.error ? (cc.llm.summary || cc.llm.reason) + ' ' : '') + (cc.website ? 'Website: ' + cc.website : 'No website on LinkedIn.'));
+        } }));
+      });
+      $('second-run').disabled = !p.length;
+      $('second-status').textContent = p.length ? '' : 'Nothing passed, so there is nothing to send to the second pass.';
+    }
+    $('passed-csv').addEventListener('click', function () {
+      csv(passedFirst(), ['name', 'url', 'website', 'industry', 'size', 'founded', 'hq', 'type', 'tagline'], 'scout-engine-first-pass.csv');
+    });
+
+    // -------------------------------------------------------------- step 5
+    $('second-run').addEventListener('click', function () {
+      var p = passedFirst();
+      if (!p.length) return;
+      var btn = $('second-run'); btn.disabled = true;
+      $('second-status').textContent = 'Fetching and screenshotting ' + p.length + (p.length === 1 ? ' website' : ' websites') + ' and asking the model… roughly 20 seconds per company.';
+      post('/api/second', { companies: p, brief: state.brief })
+      .then(function (data) {
+        state.second = data.companies; state.secondDecisions = {}; state.secondMeta = data;
+        $('second-status').textContent = '';
+        renderSecond();
+        reach(5, true);
+      }).catch(function (err) { $('second-status').textContent = 'Second pass failed: ' + (err && err.message ? err.message : 'please try again.'); })
+      .then(function () { btn.disabled = false; });
+    });
+    function secondCounts() {
+      var c = { total: state.second.length, kept: 0, eliminated: 0, unsure: 0 };
+      state.second.forEach(function (x) { c[secondStatus(x)]++; });
+      return c;
+    }
+    function secondWhy(c) {
+      var e = c.second || {}, st = secondStatus(c), items = [];
+      if (state.secondDecisions[c.slug]) items.push({ t: 'You ' + (state.secondDecisions[c.slug] === 'kept' ? 'confirmed' : 'eliminated') + ' this' + (e.status !== state.secondDecisions[c.slug] ? ' (machine said ' + e.status + ')' : '') + '.' });
+      if (e.error) items.push({ t: 'Check failed: ' + e.error });
+      if (e.note) items.push({ t: e.note });
+      if (e.website_ok) {
+        var on = function (o) { return Object.keys(o || {}).filter(function (k) { return o[k]; }).map(function (k) { return k.replace(/_/g, ' '); }); };
+        items.push({ k: 'URL', t: e.domain + ' (.' + e.tld + (e.startup_tld ? ', startup-style domain)' : ')') });
+        items.push({ k: 'Founders', t: e.founder_titles && e.founder_titles.length ? e.founder_titles.join('; ') : 'no founder or CEO title found on the site' + (e.about_url ? ' or its about page' : '') });
+        var menu = on(e.menu); items.push({ k: 'Menu', t: menu.length ? menu.join(', ') : 'no product, solution, pricing or shop pages found' });
+        var cta = on(e.cta); items.push({ k: 'Calls to action', t: cta.length ? cta.join(', ') : 'none detected' });
+        items.push({ k: 'Colours', t: (e.palette && e.palette.length ? e.palette.length + ' main colours' + (e.purple ? ', includes purple' : '') : 'none found') + '; rounded-corner styling used ' + (e.rounded || 0) + ' times' });
+        if (e.screenshot_error) items.push({ t: 'Screenshot: ' + e.screenshot_error });
+      }
+      if (e.llm && e.llm.error) items.push({ t: 'Model: ' + e.llm.error });
+      if (e.llm && !e.llm.error) {
+        items.push({ t: e.llm.reason + ' Category: ' + e.llm.category.toUpperCase() + '.' });
+        items = items.concat(crit(e.llm, ['url', 'founders', 'design', 'images', 'pages', 'cta']));
+      }
+      var box = why(st, items);
+      if (e.website_ok && e.palette && e.palette.length) {
+        var sw = el('div', 'swatches');
+        e.palette.slice(0, 8).forEach(function (p) { var d = el('span', 'swatch'); d.style.background = p.hex; d.title = p.hex; sw.appendChild(d); });
+        box.appendChild(sw);
+      }
+      return box;
+    }
+    function secondExtra(c) {
+      var wrap = el('div', 'second');
+      var e = c.second || {};
+      if (e.screenshot) { var a = el('a'); a.href = e.final_url || c.website; a.target = '_blank'; a.rel = 'noopener'; var img = el('img', 'shot'); img.src = e.screenshot + '?t=' + Date.now(); img.alt = 'Homepage screenshot'; img.loading = 'lazy'; a.appendChild(img); wrap.appendChild(a); }
+      wrap.appendChild(secondWhy(c));
+      return wrap;
+    }
+    function renderSecond() {
+      var c = secondCounts(), m = state.secondMeta || {};
+      $('second-summary').textContent = c.total + ' checked · ' + c.eliminated + ' eliminated · ' + c.kept + ' kept · ' + c.unsure + ' unsure · ' + (m.model ? 'website checks + ' + m.model : 'website checks only, no model key set') + (m.screenshots === false ? ' · no screenshots (Chrome not found)' : '');
+      $('tabc-5').textContent = c.kept + '/' + c.total;
+      filterBar($('second-filter'), state.view.second, state.second, secondStatus, renderSecond);
+      var list = $('second-results'); list.innerHTML = '';
+      var shown2 = arrange(state.second, state.view.second, secondStatus);
+      if (!shown2.length) list.appendChild(el('li', 'empty', 'Nothing matches this filter.'));
+      shown2.forEach(function (p) {
+        var x = p.x, i = p.i;
+        var e = x.second || {};
+        list.appendChild(row(x, i, {
+          status: secondStatus(x), text: false,
+          tag: (state.secondDecisions[x.slug] ? 'decided by you' : '') + (e.final_url ? '' : ''),
+          extra: secondExtra,
+          buttons: function (cc) { return decide(cc, ['Confirm: keep', 'Eliminate'], secondStatus, function (c2, v) { state.secondDecisions[c2.slug] = v; renderSecond(); }); }
+        }));
+      });
+      $('final-note').textContent = c.unsure ? c.unsure + ' unsure stay out of the final list until you decide.' : '';
+    }
+
+    // -------------------------------------------------------------- step 6
+    $('final-go').addEventListener('click', function () { renderFinal(); reach(6); });
+    function score(x) { return x.second && x.second.score != null ? x.second.score : -1; }
+    function ranked() { return state.second.filter(function (x) { return secondStatus(x) === 'kept'; }).sort(function (a, b) { return score(b) - score(a); }); }
+    function eliminatedAll() {
+      var first = state.screened.filter(function (x) { return firstStatus(x) !== 'kept'; }).map(function (x) { return { c: x, pass: 'First pass', status: firstStatus(x), reason: (x.llm && !x.llm.error && x.llm.summary ? x.llm.summary + ' ' : '') + (x.rules && x.rules.reasons.length ? x.rules.reasons.join('; ') + '. ' : '') + (x.llm && !x.llm.error ? x.llm.reason : '') }; });
+      var second = state.second.filter(function (x) { return secondStatus(x) !== 'kept'; }).map(function (x) { return { c: x, pass: 'Second pass', status: secondStatus(x), reason: x.second && x.second.llm && !x.second.llm.error ? x.second.llm.reason : (x.second && (x.second.note || x.second.error)) || '' }; });
+      return first.concat(second);
+    }
+    function funnel() {
+      var c1 = firstCounts(), c2 = secondCounts();
+      return { gathered: state.results.length, screened: c1.total, notScreened: Math.max(0, state.results.length - c1.total), firstEliminated: c1.eliminated, firstUnsure: c1.unsure, passedFirst: passedFirst().length, secondEliminated: c2.eliminated, unsure: c1.unsure + c2.unsure, identified: ranked().length };
+    }
+    function renderFinal() {
+      var f = funnel();
+      $('final-summary').textContent = f.identified + (f.identified === 1 ? ' startup' : ' startups') + ' identified from ' + f.gathered + ' gathered: ' + f.firstEliminated + ' eliminated in the first pass, ' + f.secondEliminated + ' in the second' + (f.unsure ? ', ' + f.unsure + ' left unsure' : '') + '. Ranked by a weighted score of the website checks and the card cues.';
+      $('tabc-6').textContent = f.identified;
+      state.report = null;
+      $('report').hidden = true; $('report-download').hidden = true; $('report-print').hidden = true;
+      $('report-status').textContent = '';
+      $('report').innerHTML = '';
+      $('report').appendChild(rankedTable());
+      $('report').hidden = false;
+    }
+    function rankedTable() {
+      var list = el('ol', 'ranked');
+      ranked().forEach(function (x, i) {
+        var e = x.second || {}, l = e.llm && !e.llm.error ? e.llm : null;
+        var li = el('li');
+        var head = el('div', 'rank-head');
+        head.appendChild(el('span', 'rank-n', '#' + (i + 1)));
+        if (x.logo) { var img = el('img', 'logo'); img.src = x.logo; img.alt = ''; head.appendChild(img); }
+        var a = el('a', 'rank-name', x.name); a.href = e.final_url || x.website || x.url; a.target = '_blank'; a.rel = 'noopener'; head.appendChild(a);
+        if (l) head.appendChild(el('span', 'badge badge-kept', l.category.toUpperCase()));
+        var sc = el('span', 'score'); var track = el('span', 'score-track'); track.appendChild(el('span', 'score-bar')).style.width = Math.max(0, score(x)) + '%'; sc.appendChild(track); sc.appendChild(el('span', 'score-n', score(x) >= 0 ? score(x) + '/100' : 'n/a')); head.appendChild(sc);
+        li.appendChild(head);
+        li.appendChild(el('p', 'facts', [x.industry, x.size, x.founded ? 'founded ' + x.founded : '', x.hq, e.domain, e.founder_titles && e.founder_titles[0]].filter(Boolean).join(' · ')));
+        if (l) {
+          li.appendChild(el('p', null, l.summary || l.reason));
+          if (l.strengths && l.strengths.length) { var st = el('p', 'facts'); st.appendChild(el('strong', null, 'Strengths: ')); st.appendChild(document.createTextNode(l.strengths.join('; '))); li.appendChild(st); }
+          if (l.concerns && l.concerns.length) { var co = el('p', 'facts'); co.appendChild(el('strong', null, 'Concerns: ')); co.appendChild(document.createTextNode(l.concerns.join('; '))); li.appendChild(co); }
+          li.appendChild(el('p', 'facts', ['url', 'founders', 'design', 'images', 'pages', 'cta'].map(function (k) { return k + ' ' + l[k].score; }).join(' · ') + (x.llm && !x.llm.error ? ' · logo ' + x.llm.logo.score + ' · name ' + x.llm.name.score + ' · description ' + x.llm.description.score : '')));
+        }
+        list.appendChild(li);
+      });
+      if (!list.children.length) list.appendChild(el('li', null, 'No startups passed the second pass.'));
+      return list;
+    }
+    $('report-run').addEventListener('click', function () {
+      var btn = $('report-run'); btn.disabled = true;
+      $('report-status').textContent = 'Writing the executive summary…';
+      var f = funnel();
+      var rows = ranked().map(function (x) { var l = x.second.llm || {}; return { name: x.name, score: score(x), category: l.category || 'other', summary: l.summary || l.reason || '' }; });
+      post('/api/report', { query: state.query, sector: form.sector.value.trim(), location: form.location.value.trim(), funnel: f, companies: rows })
+      .then(function (data) {
+        state.report = data;
+        $('report-status').textContent = data.note || '';
+        renderReport();
+        $('report-download').hidden = false; $('report-print').hidden = false;
+      }).catch(function (err) { $('report-status').textContent = 'Report failed: ' + (err && err.message ? err.message : 'please try again.'); })
+      .then(function () { btn.disabled = false; });
+    });
+    function renderReport() {
+      var r = state.report || {}, f = funnel();
+      var art = $('report'); art.innerHTML = '';
+      art.appendChild(el('h4', 'report-title', r.headline || 'Scouting report'));
+      art.appendChild(el('p', 'facts', 'Search: ' + state.query + ' · ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })));
+      var fun = el('ul', 'funnel');
+      [['Gathered', f.gathered]].concat(f.notScreened ? [['Not screened (over the cap)', f.notScreened]] : []).concat([['Eliminated, first pass', f.firstEliminated], ['Passed first pass', f.passedFirst], ['Eliminated, second pass', f.secondEliminated], ['Unsure', f.unsure], ['Identified startups', f.identified]]).forEach(function (p) { var li = el('li'); li.appendChild(el('strong', null, String(p[1]))); li.appendChild(el('span', null, p[0])); fun.appendChild(li); });
+      art.appendChild(fun);
+      if (r.executive_summary) { art.appendChild(el('h5', null, 'Executive summary')); art.appendChild(el('p', null, r.executive_summary)); }
+      art.appendChild(el('h5', null, 'Ranked startups'));
+      art.appendChild(rankedTable());
+      if (r.next_steps && r.next_steps.length) { art.appendChild(el('h5', null, 'Suggested next steps')); var ns = el('ul'); r.next_steps.forEach(function (t) { ns.appendChild(el('li', null, t)); }); art.appendChild(ns); }
+      art.appendChild(el('h5', null, 'Appendix: eliminated and unsure'));
+      var ex = el('ul', 'appendix');
+      eliminatedAll().forEach(function (it) { var li = el('li'); li.appendChild(el('strong', null, it.c.name)); li.appendChild(document.createTextNode(' — ' + it.pass + ', ' + it.status + '. ' + it.reason)); ex.appendChild(li); });
+      art.appendChild(ex);
+      art.hidden = false;
+    }
+    $('report-download').addEventListener('click', function () {
+      var css = ''; Array.prototype.forEach.call(document.styleSheets, function (ss) { try { Array.prototype.forEach.call(ss.cssRules, function (r) { css += r.cssText + '\n'; }); } catch (_) {} });
+      var html = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>' + ((state.report && state.report.headline) || 'Scouting report') + '</title><style>' + css + ' body{padding:40px;} .report{max-width:880px;margin:0 auto;}</style></head><body><article class="report">' + $('report').innerHTML.replace(/src="\/shots\//g, 'src="' + location.origin + '/shots/') + '</article></body></html>';
+      var a = el('a'); a.href = URL.createObjectURL(new Blob([html], { type: 'text/html' })); a.download = 'scout-engine-report.html'; a.click();
+    });
+    $('report-print').addEventListener('click', function () { window.print(); });
+    $('final-csv').addEventListener('click', function () {
+      csv(ranked(), [function (x, i) { return score(x); }, 'name', 'url', function (x) { return x.second && x.second.final_url || x.website; }, function (x) { return x.second && x.second.llm ? x.second.llm.category : ''; }, 'industry', 'size', 'founded', 'hq', function (x) { return (x.second && x.second.founder_titles || []).join('; '); }, function (x) { return x.second && x.second.llm ? x.second.llm.summary : ''; }], 'scout-engine-startups.csv');
+    });
+
+    // Debug handle: inspect state or re-render any step from the console.
+    window.scout = { state: function () { return state; }, renderScreen: renderScreen, renderReview: renderReview, renderPassed: renderPassed, renderSecond: renderSecond, renderFinal: renderFinal, renderReport: renderReport, funnel: funnel, ranked: ranked };
+  })();
+</script>
+</body>
+</html>
