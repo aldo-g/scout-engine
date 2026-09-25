@@ -9,7 +9,7 @@ Startup scouting for accelerators, incubators and investors. This repo holds two
 
 Six steps, one tab each on `search.html`:
 
-1. **Search.** One Google query limited to LinkedIn company pages (`site:nl.linkedin.com/company "circular economy" Amsterdam ...`) with an optional company-size clause and a "first seen since" date. A discovery agent then plans its own key terms (local language, adjacent terms, nearby places, startup framing, anything in your brief), shows them as a word cloud that sorts by priority, runs them, and adds a couple of adaptive queries at the end. Results are deduped by LinkedIn slug.
+1. **Search.** One Google query limited to LinkedIn company pages (`site:nl.linkedin.com/company "circular economy" Amsterdam ...`) with an optional company-size clause and a "first seen since" date. A discovery agent then plans its own key terms (local language, adjacent terms, nearby places, startup framing, anything in your brief), shows the plan as a numbered list, runs it in order with live counts, and adds a couple of adaptive queries at the end. Results are deduped by LinkedIn slug.
 2. **First pass.** Each company's public LinkedIn page gives its logo, tagline, description, size, founded year, HQ, industry and type. Deterministic rules eliminate consultancies, networks, nonprofits and the like. The model scores logo, name and description and writes a one-line summary and USP for every company.
 3. **Review unsure.** Confirm or unconfirm the unsure ones. Any row can be overridden.
 4. **Passed first pass.** The survivors, with CSV export.
