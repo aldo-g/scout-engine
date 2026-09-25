@@ -1,2 +1,6 @@
 .DS_Store
 nohup.out
+.gstack/
+.env
+node_modules/
+.cache/
