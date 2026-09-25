@@ -88,7 +88,7 @@
     </form>
 
           <p id="search-status" class="status" hidden></p>
-          <div id="search-plan" class="plan" hidden><p class="trace-head" id="plan-head">The agent is choosing its key terms…</p><div class="cloud" id="cloud"></div></div>
+          <div id="search-plan" class="plan" hidden><p class="trace-head" id="plan-head">The agent is choosing its key terms…</p><ol class="plan-list" id="cloud"></ol></div>
           <div id="search-trace" class="trace" hidden></div>
           <div class="stage-actions" id="results-bar" hidden><button type="button" id="results-toggle" class="btn btn-quiet">Show companies</button><span class="stage-note">The full list is long; the first pass is where it gets useful.</span></div>
           <ol id="search-results" class="results results-compact" hidden></ol>
@@ -237,55 +237,22 @@
         return pump();
       });
     }
-    // Word cloud of the agent's plan: terms pop in scattered, then glide into
-    // priority order. Positions are absolute so the move is one CSS transition.
-    var cloud = { items: [], nodes: [], ordered: false };
+    // The agent's search plan as a numbered list; rows fill in as the queries run.
+    var cloud = { items: [], nodes: [], ordered: true, ready: false, planReceived: false };
     var GROUP_CLASS = { seed: 'g-seed', 'local language': 'g-lang', 'adjacent term': 'g-adj', 'nearby place': 'g-place', 'startup framing': 'g-frame', 'user suggestion': 'g-user', adaptive: 'g-adaptive' };
-    function cloudReset() { cloud = { items: [], nodes: [], ordered: false }; $('cloud').innerHTML = ''; $('cloud').style.height = ''; }
-    function cloudAdd(item, index, animate) {
-      var box = $('cloud');
-      var n = el('div', 'term ' + (GROUP_CLASS[item.group] || 'g-adj'));
-      n.appendChild(el('span', 'term-n', ''));
+    function cloudReset() { cloud = { items: [], nodes: [], ordered: true, ready: false, planReceived: false }; $('cloud').innerHTML = ''; }
+    function cloudAdd(item, index) {
+      var n = el('li', 'term ' + (GROUP_CLASS[item.group] || 'g-adj'));
+      n.appendChild(el('span', 'term-n', String(index + 1).padStart(2, '0')));
       n.appendChild(el('span', 'term-t', item.term));
       n.appendChild(el('span', 'term-q', item.query));
       n.appendChild(el('span', 'term-c', ''));
       n.title = item.why || '';
-      var w = box.clientWidth || 800, h = 260;
-      var size = 1.35 - Math.min(index, 10) * 0.06; // earlier priorities a little bigger
-      n.style.fontSize = size + 'em';
-      // scatter: a jittered grid so terms rarely overlap
-      var cols = 4, cell = w / cols, row = Math.floor(index / cols), col = index % cols;
-      var est = 40 + item.term.length * 9 * size; // rough chip width so it stays inside the box
-      var left = Math.min(Math.max(10, col * cell + 10 + Math.random() * Math.max(0, cell - est)), Math.max(10, w - est - 10)), top = 12 + (row % 3) * (h / 3) + Math.random() * 40;
-      n.style.left = left + 'px'; n.style.top = top + 'px';
-      n.style.transform = 'rotate(' + ((Math.random() * 10) - 5) + 'deg) scale(0.2)';
-      n.style.opacity = '0';
-      box.appendChild(n);
+      $('cloud').appendChild(n);
       cloud.items[index] = item; cloud.nodes[index] = n;
-      box.style.height = Math.max(parseInt(box.style.height || '0', 10), h + 40) + 'px';
-      setTimeout(function () { n.style.opacity = '1'; n.style.transform = 'rotate(' + ((Math.random() * 10) - 5) + 'deg) scale(1)'; }, animate ? 90 * index : 0);
     }
-    function cloudOrder() {
-      cloud.ordered = true;
-      var box = $('cloud');
-      var y = 0;
-      cloud.nodes.forEach(function (n, i) {
-        if (!n) return;
-        n.classList.add('is-ordered');
-        n.style.fontSize = '';
-        n.querySelector('.term-n').textContent = String(i + 1).padStart(2, '0');
-        n.style.left = '0px'; n.style.top = y + 'px'; n.style.transform = 'none';
-        y += 58;
-      });
-      box.style.height = (y + 8) + 'px';
-      box.classList.add('is-list');
-    }
-    function cloudAppend(item) {
-      var i = item.plan_index != null ? item.plan_index : cloud.nodes.length;
-      cloudAdd(item, i, false);
-      var n = cloud.nodes[i];
-      requestAnimationFrame(function () { n.classList.add('is-ordered'); n.querySelector('.term-n').textContent = String(i + 1).padStart(2, '0'); n.style.left = '0px'; n.style.top = (i * 58) + 'px'; n.style.transform = 'none'; n.style.fontSize = ''; n.style.opacity = '1'; $('cloud').style.height = (i * 58 + 66) + 'px'; });
-    }
+    function cloudOrder() { cloud.ready = true; }
+    function cloudAppend(item) { cloudAdd(item, item.plan_index != null ? item.plan_index : cloud.nodes.length); }
     function cloudMark(index, state, text) {
       var n = cloud.nodes[index]; if (!n) return;
       n.classList.remove('is-running', 'is-done', 'is-skipped');
@@ -421,15 +388,10 @@
       done = stream('/api/discover', params, function (ev) {
         if (ev.type === 'plan') {
           cloud.planReceived = true;
-          $('plan-head').textContent = 'Key terms the agent chose, popping in… then sorted by priority';
-          ev.items.forEach(function (it, i) { cloudAdd(it, i, true); });
-          var wait = 90 * ev.items.length + 1400;
-          setTimeout(function () {
-            cloudOrder();
-            $('plan-head').textContent = 'Search plan, in the order it runs';
-            pending.forEach(function (fn) { fn(); }); pending = [];
-            cloud.ready = true;
-          }, wait);
+          $('plan-head').textContent = 'Search plan, in the order it runs';
+          ev.items.forEach(function (it, i) { cloudAdd(it, i); });
+          cloudOrder();
+          pending.forEach(function (fn) { fn(); }); pending = [];
           cloudMark(0, 'done', cloud.seedText || '');
         } else if (ev.type === 'query') {
           var apply = function () {
