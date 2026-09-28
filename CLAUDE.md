@@ -1,7 +1,6 @@
-# Scout Engine
+# Scout Engine site
 
-Static landing page (`index.html`) plus a local prototype of the scouting pipeline (`search.html` served by `server.js`).
-Run `npm install` once, put keys in `.env` (see `.env.example`), then `node server.js` and open http://localhost:8765/search.html.
+Static landing page for Scout Engine (`index.html` plus `assets/`), published on GitHub Pages from this repo. No build step: edit the HTML and CSS directly. The scouting pipeline app (search, screening, dashboard, local server) lives in the separate `scout-engine-app` project next to this one.
 
 ## Skill routing
 
